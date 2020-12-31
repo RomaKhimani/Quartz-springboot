@@ -20,16 +20,17 @@ public class PlayGroundController {
 
     @PostMapping("/runhelloworld")
     public void runHelloWorldJob(){
+        System.out.println("1. Calling from Playground controller");
         service.runHelloWorldJob();
     }
 
-    @GetMapping
-    public List<TimerInfo> getAllRunningTimers(){
-        return service.getAllRunningTimers();
-    }
-
-    @GetMapping("/{timerId}")
-    public TimerInfo getRunningTimer(@PathVariable String timerId){
-        return service.getRunningTimer(timerId);
-    }
+//    @GetMapping
+//    public List<TimerInfo> getAllRunningTimers(){
+//        return service.getAllRunningTimers();
+//    }
+//
+//    @GetMapping("/{timerId}")
+//    public TimerInfo getRunningTimer(@PathVariable String timerId){
+//        return service.getRunningTimer(timerId);
+//    }
 }

@@ -4,17 +4,20 @@ import com.example.jobs.HelloWorldJob;
 import com.example.services.SchedulerService;
 import com.example.info.TimerInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
-public class PlayGroundService {
+public class PlayGroundService  {
 
     private final SchedulerService scheduler;
 
@@ -23,16 +26,20 @@ public class PlayGroundService {
         this.scheduler = scheduler;
     }
 
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
 
-    public void runHelloWorldJob(){
+    public void runHelloWorldJob() {
+        System.out.println("2. Calling from runHelloWorldJob Playground service");
         final TimerInfo info=new TimerInfo();
         info.setTotalFireCount(5);
         info.setRepeatIntervalMs(2000);
         info.setInitialOffsetMs(5000);
         info.setCallBackData("My callback data");
 
-        scheduler.schedule(HelloWorldJob.class,info );
+
+        scheduler.schedule(HelloWorldJob.class , info);
     }
 
     public List<TimerInfo> getAllRunningTimers(){

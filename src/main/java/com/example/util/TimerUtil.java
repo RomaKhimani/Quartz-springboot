@@ -9,18 +9,23 @@ public final class TimerUtil {
 
     private TimerUtil(){}
 
-    public static JobDetail buildJobDetails(final Class jobClass, final TimerInfo info){
+    public static JobDetail buildJobDetails(final Class jobClass){
         final JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(jobClass.getSimpleName(), info);
+        jobDataMap.put("Job Name", jobClass.getSimpleName());
+        jobDataMap.put("Job Type name",jobClass.getTypeName());
 
         return JobBuilder
                 .newJob(jobClass)
                 .withIdentity(jobClass.getSimpleName())
-                .setJobData(jobDataMap)
+                .withDescription("Job schedule saved for" +jobClass.getSimpleName())
+                .usingJobData(jobDataMap)
+                .storeDurably()
                 .build();
+
+//.setJobData(jobDataMap)
     }
 
-    public static Trigger buildTrigger(final Class jobClass, final TimerInfo info){
+    public static Trigger buildTrigger(final JobDetail jobDetail,TimerInfo info){
         SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule().withIntervalInMilliseconds(info.getRepeatIntervalMs());
 
         if(info.isRunForever()){
@@ -32,9 +37,17 @@ public final class TimerUtil {
 
         return TriggerBuilder
                 .newTrigger()
-                .withIdentity(jobClass.getSimpleName())
+                .forJob(jobDetail)
+                .withIdentity(jobDetail.getKey().getName())
+                .withDescription("Send Trigger")
                 .withSchedule(builder)
-                .startAt(new Date(System.currentTimeMillis() + info.getInitialOffsetMs()))
+                .startAt(new Date())
                 .build();
+
+//        .newTrigger()
+//                .withIdentity(jobClass.getSimpleName())
+//                .withSchedule(builder)
+//                .startAt(new Date(System.currentTimeMillis() + info.getInitialOffsetMs()))
+//                .build();
     }
 }
